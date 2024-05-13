@@ -1,12 +1,10 @@
 name: dev
 
 on:
+  push:
+    branches: [ dev, main ]
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    branches:
-      - main
-      - develop
-      - dev
+    branches: [ dev, main ]
 
 jobs:
   lint:
@@ -39,3 +37,16 @@ jobs:
 
       - name: Run linters
         run: npx lint-staged --diff="origin/${GITHUB_BASE_REF}...origin/${GITHUB_HEAD_REF}"
+
+      # Runs a single command using the runners shell
+      - name: Composer
+        run: |
+          cd ./server
+          composer install
+
+      - name: code_quality
+        run: |
+          cd ./server
+          ./vendor/bin/phpcs
+          ./vendor/bin/phpstan analyse src --level 5
+          ./vendor/bin/phpmd src text phpmd.xml

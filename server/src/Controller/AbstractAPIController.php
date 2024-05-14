@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Controller;
-
 
 abstract class AbstractAPIController extends AbstractController
 {
